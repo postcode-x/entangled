@@ -1,0 +1,123 @@
+[gd_scene load_steps=16 format=2]
+
+[ext_resource path="res://assets/models/Board.tscn" type="PackedScene" id=1]
+[ext_resource path="res://assets/models/BirdModel.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scripts/Player.gd" type="Script" id=3]
+[ext_resource path="res://scripts/CPU.gd" type="Script" id=4]
+[ext_resource path="res://scripts/MainLevel.gd" type="Script" id=5]
+[ext_resource path="res://GUI.tscn" type="PackedScene" id=6]
+[ext_resource path="res://assets/sounds/STRTBUM2.WAV" type="AudioStream" id=7]
+[ext_resource path="res://assets/sounds/STRTBOOM.WAV" type="AudioStream" id=8]
+[ext_resource path="res://assets/sounds/ROCKS3.WAV" type="AudioStream" id=9]
+[ext_resource path="res://assets/sounds/ROCK1.WAV" type="AudioStream" id=10]
+[ext_resource path="res://assets/sounds/ROCK2.WAV" type="AudioStream" id=11]
+[ext_resource path="res://assets/music/song1.wav" type="AudioStream" id=12]
+[ext_resource path="res://assets/GUI/move_grey.png" type="Texture" id=14]
+[ext_resource path="res://assets/sounds/SALRUSH.WAV" type="AudioStream" id=15]
+[ext_resource path="res://assets/GUI/move_ok.png" type="Texture" id=16]
+
+[node name="MainLevel" type="Spatial"]
+script = ExtResource( 5 )
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( 0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 2, 3.1, 2 )
+projection = 1
+fov = 60.0
+size = 5.0
+
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+transform = Transform( 0.798636, -0.474237, 0.370514, 0, 0.615661, 0.788011, -0.601815, -0.629333, 0.491689, 0, 1.761, 0 )
+light_energy = 0.5
+
+[node name="Board" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0 )
+collision_mask = 6
+
+[node name="Player" parent="." instance=ExtResource( 2 )]
+collision_layer = 2
+collision_mask = 2147483673
+script = ExtResource( 3 )
+
+[node name="CPU" parent="." instance=ExtResource( 2 )]
+collision_layer = 4
+collision_mask = 2147483673
+script = ExtResource( 4 )
+
+[node name="GUI" parent="." instance=ExtResource( 6 )]
+
+[node name="ModeButton" type="MarginContainer" parent="."]
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_top = -184.0
+margin_bottom = 336.0
+rect_scale = Vector2( 0.2, 0.2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Container" type="HBoxContainer" parent="ModeButton"]
+margin_right = 1366.0
+margin_bottom = 520.0
+
+[node name="CheckButton" type="CheckButton" parent="ModeButton/Container"]
+margin_right = 524.0
+margin_bottom = 520.0
+custom_icons/off = ExtResource( 14 )
+custom_icons/on = ExtResource( 16 )
+pressed = true
+
+[node name="Sounds" type="Node" parent="."]
+
+[node name="Collision1" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 7 )
+volume_db = -3.0
+
+[node name="Collision2" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 8 )
+volume_db = -3.0
+
+[node name="Particle1" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 10 )
+
+[node name="Particle2" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 11 )
+
+[node name="Particle3" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 9 )
+
+[node name="SlideMove" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 15 )
+
+[node name="SlideMirror" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 15 )
+
+[node name="Song" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 12 )
+volume_db = -10.0
+
+[node name="SpawnInstance" type="Timer" parent="."]
+one_shot = true
+
+[node name="KillInstance" type="Timer" parent="."]
+one_shot = true
+
+[node name="Immunity" type="Timer" parent="."]
+one_shot = true
+[connection signal="cpu_trap_ready" from="." to="Player" method="_on_MainLevel_cpu_trap_ready"]
+[connection signal="cpu_trap_ready" from="." to="GUI" method="_on_MainLevel_cpu_trap_ready"]
+[connection signal="player_trap_ready" from="." to="GUI" method="_on_MainLevel_player_trap_ready"]
+[connection signal="player_trap_ready" from="." to="CPU" method="_on_MainLevel_player_trap_ready"]
+[connection signal="update_GUI" from="." to="GUI" method="_on_MainLevel_update_GUI"]
+[connection signal="move_completed" from="Player" to="CPU" method="_on_Player_move_completed"]
+[connection signal="player_collision" from="Player" to="." method="_on_Player_player_collision"]
+[connection signal="set_trap" from="Player" to="." method="_on_Player_set_trap"]
+[connection signal="start_moving" from="Player" to="." method="_on_Player_start_moving"]
+[connection signal="cpu_collision" from="CPU" to="." method="_on_CPU_cpu_collision"]
+[connection signal="move_completed" from="CPU" to="Player" method="_on_CPU_move_completed"]
+[connection signal="set_trap" from="CPU" to="." method="_on_CPU_set_trap"]
+[connection signal="start_moving" from="CPU" to="." method="_on_CPU_start_moving"]
+[connection signal="pressed" from="ModeButton/Container/CheckButton" to="Player" method="_on_CheckButton_pressed"]
+[connection signal="timeout" from="SpawnInstance" to="." method="_on_SpawnInstance_timeout"]
+[connection signal="timeout" from="KillInstance" to="." method="_on_KillInstance_timeout"]
+[connection signal="timeout" from="Immunity" to="." method="_on_Immunity_timeout"]

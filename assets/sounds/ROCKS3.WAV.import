@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/ROCKS3.WAV-8b55a511ddd92d4de94101196a3d5826.sample"
+
+[deps]
+
+source_file="res://assets/sounds/ROCKS3.WAV"
+dest_files=[ "res://.import/ROCKS3.WAV-8b55a511ddd92d4de94101196a3d5826.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0
